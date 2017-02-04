@@ -59,7 +59,7 @@ public class Robot extends SampleRobot implements PIDOutput
 	 * collision will be dependent upon the robot mass and expected maximum
 	 * velocity of either the robot, or any object which may strike the robot.
 	 */
-	double max_collision =0;
+	double max_collision = 0;
 
 	double last_world_linear_accel_x;
 	double last_world_linear_accel_y;
@@ -170,26 +170,28 @@ public class Robot extends SampleRobot implements PIDOutput
 			double curr_world_linear_accel_y = ahrs.getWorldLinearAccelY();
 			double currentJerkY = curr_world_linear_accel_y - last_world_linear_accel_y;
 			last_world_linear_accel_y = curr_world_linear_accel_y;
-			
+
 			SmartDashboard.putNumber("Curr Accel Y", curr_world_linear_accel_y);
 			SmartDashboard.putNumber("Last Accel Y", last_world_linear_accel_y);
+			SmartDashboard.putNumber("Heading", ahrs.getAngle());
 
 			if (Math.abs(currentJerkY) > max_collision)
 			{
 				max_collision = Math.abs(currentJerkY);
 			}
-			
+
 			SmartDashboard.putNumber("Max", max_collision);
 			if ( /*
-					 * ( Math.abs(currentJerkX) > kCollisionThreshold_DeltaG ) ||
+					 * ( Math.abs(currentJerkX) > kCollisionThreshold_DeltaG )
+					 * ||
 					 */
-			Math.abs(currentJerkY) > kCollisionThreshold_DeltaG )
+			Math.abs(currentJerkY) > kCollisionThreshold_DeltaG)
 			{
 				collisionDetected = 1;
 				SmartDashboard.putString("Crash", "Bang");
 			}
 			SmartDashboard.putNumber("CollisionDetected", collisionDetected);
-			if(Math.abs(currentJerkX) > 0.5 || Math.abs(currentJerkY) > 0.5)
+			if (Math.abs(currentJerkX) > 0.5 || Math.abs(currentJerkY) > 0.5)
 			{
 				SmartDashboard.putNumber("JerkX ", currentJerkX);
 				SmartDashboard.putNumber("Jerk Y", currentJerkY);
@@ -198,8 +200,7 @@ public class Robot extends SampleRobot implements PIDOutput
 			if (stick.getRawButton(1))
 			{
 				ahrs.reset();
-			}
-			if (stick.getRawButton(2))
+			} else if (stick.getRawButton(2))
 			{
 				turnController.setSetpoint(0.0f);
 				rotateToAngle = true;
@@ -218,7 +219,7 @@ public class Robot extends SampleRobot implements PIDOutput
 			} else if (stick.getRawButton(6) || collisionDetected == 1)
 			{
 				collisionDetected++;
-				turnController.setSetpoint(-179.9);
+				turnController.setSetpoint(-179.9f);
 				rotateToAngle = true;
 				// evade = true;
 				x = 0.75;
@@ -229,7 +230,6 @@ public class Robot extends SampleRobot implements PIDOutput
 			{
 				turnController.enable();
 				currentRotationRate = rotateToAngleRate;
-				// if (evade) currentRotationRate = 1;
 			} else
 			{
 				turnController.disable();
